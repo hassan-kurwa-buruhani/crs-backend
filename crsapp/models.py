@@ -13,8 +13,9 @@ class Conditions(models.TextChoices):
     Severe = 'Severe', _('Severe')  
 
 class Status(models.TextChoices):
-    Alive = 'Alive', _('Alive')
+    Recovered = 'Recovered', _('Recovered')
     Dead = 'Dead', _('Dead')
+    Alive = 'Alive', _('Alive')
 
 class Gender(models.TextChoices):
     Male = 'Male', _('Male')
@@ -29,7 +30,7 @@ class User(AbstractUser):
 
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} {(self.role)}"
+        return f"{self.first_name} {self.last_name} ({self.role})"
 
 
 
@@ -61,7 +62,7 @@ class Street(models.Model):
 
 
 class Sheha(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={Roles.Sheha})
+    user = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={"role": Roles.Sheha})   
     street = models.ForeignKey(Street, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -82,7 +83,7 @@ class HealthCenter(models.Model):
 
 
 class Doctor(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={Roles.Doctor})
+    user = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={"role": Roles.Doctor})
     health_center = models.ForeignKey(HealthCenter, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -99,6 +100,8 @@ class Patient(models.Model):
     status = models.CharField(max_length=10, choices=Status.choices)
     phone = models.CharField(max_length=15, null=True, blank=True)
     street = models.ForeignKey(Street, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -116,13 +119,8 @@ class CaseReport(models.Model):
     def __str__(self):
         return f' A report from {self.date} for {self.patient.first_name} {self.patient.last_name}'
 
+    class Meta:
+        unique_together = ('patient',)
 
 
-class HealthSupervisor(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={Roles.HealthSupervisor})
-    phone = models.CharField(max_length=15, null=True, blank=True)
-    email = models.EmailField(unique=True)
-
-    def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
     

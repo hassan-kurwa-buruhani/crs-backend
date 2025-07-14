@@ -2,6 +2,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from .models import *
 
 User = get_user_model()
 
@@ -63,3 +64,13 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
+
+
+
+
+
+class PatientSerializer(serializers.ModelSerializer):
+    street = serializers.SlugRelatedField(slug_field='name', queryset=Street.objects.all())
+    class Meta:
+        model = Patient
+        fields = '__all__'

@@ -7,12 +7,15 @@ from crsapp.views import *
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
+router.register(r'doctor/patients', PatientViewSet, basename='doctor-patients')
+router.register(r'sheha/patients', PatientViewSetsheha, basename='sheha-patients')
+router.register(r'patients', PatientView, basename='patients')
 
 
 urlpatterns = [
     # JWT token endpoints
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     
     path('', include(router.urls)),

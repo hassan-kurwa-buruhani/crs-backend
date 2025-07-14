@@ -5,7 +5,7 @@ from .models import User
 
 from .models import (
     User, Region, District, Street, Sheha,
-    HealthCenter, Doctor, Patient, CaseReport, HealthSupervisor
+    HealthCenter, Doctor, Patient, CaseReport
 )
 
 
@@ -63,13 +63,17 @@ class PatientAdmin(admin.ModelAdmin):
     search_fields = ('first_name', 'last_name', 'phone')
 
 
+
 @admin.register(CaseReport)
 class CaseReportAdmin(admin.ModelAdmin):
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'patient':
+            # Exclude Patients that already have a CaseReport
+            used_patients = CaseReport.objects.values_list('patient', flat=True)
+            kwargs['queryset'] = Patient.objects.exclude(id__in=used_patients)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
     list_display = ('patient', 'health_center', 'doctor', 'date')
     list_filter = ('date', 'health_center', 'doctor')
 
 
-@admin.register(HealthSupervisor)
-class HealthSupervisorAdmin(admin.ModelAdmin):
-    list_display = ('user', 'phone', 'email')
-    search_fields = ('user__first_name', 'user__last_name', 'email')
