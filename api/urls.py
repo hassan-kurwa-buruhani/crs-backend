@@ -10,6 +10,7 @@ router.register(r'users', UserViewSet, basename='user')
 router.register(r'doctor/patients', PatientViewSet, basename='doctor-patients')
 router.register(r'sheha/patients', PatientViewSetsheha, basename='sheha-patients')
 router.register(r'patients', PatientView, basename='patients')
+router.register(r'cases', CaseReportView, basename='cases')
 
 
 urlpatterns = [

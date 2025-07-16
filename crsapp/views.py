@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import MyTokenObtainPairSerializer
 from rest_framework import generics, permissions, viewsets
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .serializers import *
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
@@ -22,7 +22,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
 
 
@@ -73,4 +73,9 @@ class PatientViewSetsheha(viewsets.ModelViewSet):
 class PatientView(viewsets.ModelViewSet):
     serializer_class = PatientSerializer
     queryset = Patient.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+class CaseReportView(viewsets.ModelViewSet):
+    serializer_class = CaseSerializer
+    queryset = CaseReport.objects.all()
     permission_classes = [permissions.IsAuthenticated]

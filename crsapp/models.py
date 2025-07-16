@@ -24,9 +24,10 @@ class Gender(models.TextChoices):
 
 
 class User(AbstractUser):
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=10, null=True, blank=True)
+    email = models.EmailField(max_length=254,unique=True)
+    phone = models.CharField(max_length=15, null=True, blank=True)
     role = models.CharField(max_length=20, choices=Roles.choices)
+
 
 
     def __str__(self):
@@ -110,9 +111,9 @@ class Patient(models.Model):
 
 
 class CaseReport(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    health_center = models.ForeignKey(HealthCenter, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='casereport')
+    health_center = models.ForeignKey(HealthCenter, on_delete=models.CASCADE, related_name='casereport')
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='casereport')
     date = models.DateField(auto_now_add=True)
     description = models.TextField()
 

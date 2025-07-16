@@ -74,3 +74,47 @@ class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         fields = '__all__'
+
+
+class CaseSerializer(serializers.ModelSerializer):
+    patient = PatientSerializer()
+    health_center = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=HealthCenter.objects.all()
+    )
+    doctor = serializers.SlugRelatedField(
+        slug_field='user__first_name',
+        queryset=Doctor.objects.all()
+    )
+    district = serializers.SerializerMethodField()
+    street_name = serializers.SerializerMethodField()
+    street_location = serializers.SerializerMethodField()
+    region = serializers.SerializerMethodField()
+    doctor_full_name = serializers.SerializerMethodField()
+
+    def get_doctor_full_name(self, obj):
+        return f"{obj.doctor.user.first_name} {obj.doctor.user.last_name}"
+
+    def get_district(self, obj):
+        return obj.patient.street.district.name
+
+    def get_region(self, obj):
+        return obj.patient.street.district.region.name
+
+    def get_street_name(self, obj):
+        return obj.patient.street.name
+
+    def get_street_location(self, obj):
+        location = obj.patient.street.location
+        if location:
+            return {
+                "latitude": location.y,
+                "longitude": location.x
+            }
+        return None
+
+    class Meta:
+        model = CaseReport
+        fields = '__all__'
+        
+
